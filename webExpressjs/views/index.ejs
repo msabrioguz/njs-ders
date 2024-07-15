@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Express Js</title>
+    <title><%= title %></title>
     <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
+    <% let name = "Mustafa" %>
     <h1>Anasayfa</h1>
-    <img src="./img/NewTux.png" alt="Linuz" srcset="">
+    <p>Merhaba <%= name %></p>
+    <img src="./img/NewTux.png" width="100px" alt="Linuz" srcset="">
+    <p>Dizi Boyutu: <%= dizi.length %></p>
+    <p>Dizi: <%= dizi %></p>
 </body>
 </html>

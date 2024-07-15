@@ -5,7 +5,10 @@ const projectMainFolder = path.join(
 );
 
 const Index = (req, res) => {
-  res.sendFile(projectMainFolder + "/html/index.html");
+  res.render("index", {
+    title: "Anasayfa",
+    dizi: [1,2,3,4,5,6,7,8,9]
+  });
 };
 
 const arac = (req, res) => {
@@ -16,8 +19,22 @@ const arac = (req, res) => {
   console.log(query);
   console.log(query.min);
   console.log(query.max);
-  res.sendFile(projectMainFolder + "/html/arac.html");
+  res.render("arac", {
+    title: "Araçlar",
+    markaAdi: parametre.markaAdi,
+    sehirAdi: parametre.sehirAdi,
+    max: query.max,
+    min: query.min,
+  });
   // res.json({ parametre: req.params.markaAdi });
 };
 
-module.exports = { arac, Index };
+const Post = (req, res) => {
+  res.status(201).json({ message: "İstek başarılı" });
+};
+
+const Patch = (req, res) => {
+  res.status(201).json({ message: "İstek başarılı" });
+};
+
+module.exports = { arac, Index, Post, Patch };

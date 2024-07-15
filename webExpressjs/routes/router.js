@@ -7,17 +7,11 @@ const projectMainFolder = path.join(
 );
 
 // Rotalar
-router.get("/", (req, res) => {
-  controller.Index(req, res);
-});
+router.get("/", controller.Index);
 
-router.get("/:markaAdi/arac/:sehirAdi", (req, res) => {
-  controller.arac(req, res);
-});
+router.get("/:markaAdi/arac/:sehirAdi", controller.arac);
 
-router.post("/", (req, res) => {
-  res.status(201).json({ message: "İstek başarılı" });
-});
+router.post("/", controller.Post);
 
 router.delete("/", (req, res) => {
   res.json({ message: "İşlem silindi." });
@@ -27,8 +21,10 @@ router.put("/", (req, res) => {
   res.json({ message: "İslem guncellendi." });
 });
 
+router.patch("/", controller.Patch);
+
 router.use((req, res) => {
-  res.status(404).sendFile(projectMainFolder + "/html/404.html");
+  res.status(404).render("404-NotFound");
 });
 
 module.exports = router;

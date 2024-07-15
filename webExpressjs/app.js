@@ -9,6 +9,8 @@ const app = express();
 
 app.use(express.static("assets"));
 app.use(express.static("html"));
+app.set('view engine', 'ejs');
+// app.set('views', './deneme');
 
 app.use(appRouter);
 
