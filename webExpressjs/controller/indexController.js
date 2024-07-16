@@ -29,6 +29,10 @@ const arac = (req, res) => {
   // res.json({ parametre: req.params.markaAdi });
 };
 
+const users = (req, res) => {
+  res.render('users');
+}
+
 const Post = (req, res) => {
   res.status(201).json({ message: "İstek başarılı" });
 };
@@ -37,4 +41,4 @@ const Patch = (req, res) => {
   res.status(201).json({ message: "İstek başarılı" });
 };
 
-module.exports = { arac, Index, Post, Patch };
+module.exports = { arac, Index, Post, Patch, users };

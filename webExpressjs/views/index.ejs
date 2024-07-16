@@ -5,13 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="./css/index.css">
+    
 </head>
 <body>
+    <%- include("./layouts/navbar.ejs") %>
     <% let name = "Mustafa" %>
     <h1>Anasayfa</h1>
     <p>Merhaba <%= name %></p>
+    <button id="btn">Tıkla</button>
     <img src="./img/NewTux.png" width="100px" alt="Linuz" srcset="">
     <p>Dizi Boyutu: <%= dizi.length %></p>
     <p>Dizi: <%= dizi %></p>
+    <ul>
+    <% for(let i=0; i < dizi.length; i++) { %>
+        <li> <%= dizi[i] %></li>
+    <% } %>
+    </ul>
+    
+    <% dizi.forEach((data) =>{ %>
+        <p> <%= data %> </p>
+    <% }) %>
+
+    <script src="./js/index.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const path = require("path");
 const controller = require("../controller/indexController");
+const userController = require("../controller/userController");
 
 const projectMainFolder = path.join(
   __dirname.substr(0, __dirname.lastIndexOf("\\"))
@@ -23,8 +24,12 @@ router.put("/", (req, res) => {
 
 router.patch("/", controller.Patch);
 
+router.get('/users', userController.index);
+
 router.use((req, res) => {
   res.status(404).render("404-NotFound");
 });
+
+
 
 module.exports = router;

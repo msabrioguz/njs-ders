@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <%- include("./layouts/navbar.ejs") %>
     <h1>Araçlar</h1>
     <p>
         Marka : <%= markaAdi %>
@@ -23,6 +24,17 @@
     <p>
         Min : <%= min %>
     </p>
+    <% if(min < 3000) { %>
+        <p>Minimum değeri 3000'den küçük olamaz.</p>
+    <% } %>
+    <% if(min === max) { %>
+        <p>Minimum ve Maximum değerileri birbirine eşit olamaz.</p>
+    <% } %>
+    <% if(min > max) { %>
+        <p>Minimum değeri Maximum değerinden büyük olamaz.</p>
+    <% } else { %>
+        <p>Filtrelemede sorun yok.</p>
+    <% } %>
 </body>
 
 </html>

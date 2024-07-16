@@ -1,4 +1,32 @@
 body {
-    background-color: rgb(47, 118, 146);
-    color: white;
+  background-color: rgb(47, 118, 146);
+  color: white;
+  margin: 0;
+}
+
+.my-nav-bar {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  display: flex;
+}
+
+.my-navbar-item {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+}
+
+.my-navbar-item a {
+  color: white;
+  display: flex;
+  text-decoration: none;
+}
+
+.my-navbar-item a:hover {
+  text-decoration: underline;
+  color: wheat;
 }
