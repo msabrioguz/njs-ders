@@ -1,7 +1,7 @@
-import express from "express";
+import Express from "express";
 
-const app =  express();
-const router = express.Router();
+const app =  Express();
+const router = Express.Router();
 
 interface User {
     id: number,
@@ -10,7 +10,7 @@ interface User {
     age: number
 }
 
-router.get("/", (req: express.Request, res: express.Response) => {
+router.get("/", (req: Express.Request, res: Express.Response) => {
     const arr: User[] = [
         {
             id: 1,
