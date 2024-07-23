@@ -14,10 +14,10 @@ const fileFilterConfig = (req, file, cb) => {
     if(file.mimetype.includes("image")) {
         cb(null, true);
     } else {
-        cb({message: "Dosya tipi desteklenmiyor."}, false);
+        cb(new multer.MulterError(300, file.originalname + ' Dosya tipi desteklenmiyor.'), false);
     }
 };
 
-const upload = multer({ storage: storageConfig, fileFilter: fileFilterConfig }).single("dosya");
+const upload = multer({ storage: storageConfig, fileFilter: fileFilterConfig });
 
 module.exports = upload;
