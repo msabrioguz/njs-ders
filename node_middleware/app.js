@@ -3,34 +3,21 @@ const app = express();
 
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
-  res.send("Hello World!");
-});
+const { indexPage, testPage, merhabaPage } = require("./controller/index");
 
-router.get("/test", (req, res, next) => {
-  res.send("Test");
-});
+const { GlobalMiddleware1, GlobalMiddleware2 } = require("./middleware/GlobalMiddleware");
+const middleware1 = require("./middleware/HomeRouteMiddleware");
+const middleware2 = require("./middleware/HomeRouteMiddleware2");
 
-app.use((req, res, next) => {
-  console.log(req.query);
-  if (req.query.adi === "Mustafa") {
-    console.log("Middleware 1 çalışıyor...");
-    next();
-  } else {
-    console.log("Adı Mustafa olan geçebilir.");
-    res.send("Adı Mustafa olan geçebilir.");
-  }
-});
 
-app.use((req, res, next) => {
-  if (Number(req.query.yas) === 25) {
-    console.log("Middleware 2");
-    next();
-  } else {
-    console.log("Yaşı 25 olan geçebilir.");
-    res.send("Yaşı 25 olan geçebilir.");
-  }
-});
+router.get("/", [middleware1, middleware2], indexPage);
+
+router.get("/test", testPage);
+
+router.get("/merhaba", merhabaPage);
+
+app.use(GlobalMiddleware1);
+app.use(GlobalMiddleware2);
 
 app.use(router);
 
