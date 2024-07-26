@@ -90,6 +90,28 @@ const selectMyData = () => {
   })
 }
 
+const findByID = (id) => {
+  const query = "SELECT * FROM ogrenciler WHERE id = ?";
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
+const findByName = (name) => {
+  const query = "SELECT * FROM ogrenciler WHERE ad = ?";
+  connection.query(query, [name], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
 connection.connect((err) => {
   if (err) {
     console.log("hata", err);
@@ -103,5 +125,12 @@ connection.connect((err) => {
   // createMultibleRecords();
   // createDynamicRecord();
 
-  selectMyData();
+  // selectMyData();
+  // findByID(11);
+  // findByID(4);
+  // findByID(2);
+
+  findByName("Ahmet");
+  findByName("Mustafa");
+
 });
