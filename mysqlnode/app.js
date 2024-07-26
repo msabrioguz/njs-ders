@@ -12,21 +12,19 @@ const connection = mysql.createConnection({
   timezone: "+03:00",
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.log("hata", err);
-  }
-  //   connection.query("CREATE DATABASE egitimdb", (err, result) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       console.log(result);
-  //     }
-  //   });
-  console.log("baglanti kuruldu");
+const createDB = () => {
+  connection.query("CREATE DATABASE egitimdb", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+};
 
+const createTable = () => {
   connection.query(
-    "CREATE TABLE ogrenciler (id INT AUTO_INCREMENT NOT NULL, ad VARCHAR(255) NOT NULL, soyad VARCHAR(255) NOT NULL, PRIMARY KEY (id))",
+    "CREATE TABLE IF NOT EXISTS ogrenciler (id INT AUTO_INCREMENT NOT NULL, ad VARCHAR(255) NOT NULL, soyad VARCHAR(255) NOT NULL, PRIMARY KEY (id))",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -35,4 +33,75 @@ connection.connect((err) => {
       }
     }
   );
+};
+
+const createRecord = () => {
+  const query = "INSERT INTO ogrenciler (ad, soyad) VALUES ('Ahmet', 'Koç')";
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+};
+
+const createMultibleRecords = () => {
+  const studentArray = [
+    ["Ahmet", "Koç"],
+    ["Ali", "Veli"],
+    ["Mehmet", "Koç"],
+    ["Ahmet", "Turan"],
+    ["Ali", "Turan"],
+    ["Mehmet", "Turan"],
+  ];
+  const query2 = "INSERT INTO ogrenciler (ad, soyad) VALUES ?";
+  connection.query(query2, [studentArray], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+};
+
+const createDynamicRecord = () => {
+  const name = process.argv[2];
+  const surname = process.argv[3];
+
+  const query = "INSERT INTO ogrenciler (ad, soyad) VALUES (?, ?)";
+  connection.query(query, [name, surname], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  });
+};
+
+const selectMyData = () => {
+  const query = "SELECT * FROM ogrenciler";
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
+connection.connect((err) => {
+  if (err) {
+    console.log("hata", err);
+  }
+
+  console.log("baglanti kuruldu");
+
+  // createDB();
+  // createTable();
+  // createRecord();
+  // createMultibleRecords();
+  // createDynamicRecord();
+
+  selectMyData();
 });
