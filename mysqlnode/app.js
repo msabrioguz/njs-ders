@@ -112,6 +112,28 @@ const findByName = (name) => {
   })
 }
 
+const findByNameWithId = (id, name) => {
+  const query = "SELECT * FROM ogrenciler WHERE id = ? and ad = ?";
+  connection.query(query, [id, name], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
+const findByNameOrSurname = (name, surname) => {
+  const query = "SELECT * FROM ogrenciler WHERE ad = ? or soyad = ?";
+  connection.query(query, [name, surname], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
 connection.connect((err) => {
   if (err) {
     console.log("hata", err);
@@ -130,7 +152,11 @@ connection.connect((err) => {
   // findByID(4);
   // findByID(2);
 
-  findByName("Ahmet");
-  findByName("Mustafa");
+  // findByName("Ahmet");
+  // findByName("Mustafa");
+
+  // findByNameWithId(4, "Ahmet");
+  findByNameOrSurname("Ahmet", "Koç");
+
 
 });
