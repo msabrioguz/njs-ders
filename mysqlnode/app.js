@@ -134,6 +134,28 @@ const findByNameOrSurname = (name, surname) => {
   })
 }
 
+const deleteByID = (id) => {
+  const query = "DELETE FROM ogrenciler WHERE id = ?";
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
+const deleteBySurname = (surname) => {
+  const query = "DELETE FROM ogrenciler WHERE soyad = ?";
+  connection.query(query, [surname], (err, result) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Result: ", result);
+    }
+  })
+}
+
 connection.connect((err) => {
   if (err) {
     console.log("hata", err);
@@ -156,7 +178,11 @@ connection.connect((err) => {
   // findByName("Mustafa");
 
   // findByNameWithId(4, "Ahmet");
-  findByNameOrSurname("Ahmet", "Koç");
+  // findByNameOrSurname("Ahmet", "Koç");
+  // deleteByID(9);
 
-
+  selectMyData();
+  deleteBySurname("Koç");
+  selectMyData();
 });
+
