@@ -113,6 +113,21 @@ const createOtherData = (data) => {
   });
 };
 
+const getAllData = () => {
+  const query = `SELECT * FROM gonderi_etiket AS ge 
+  INNER JOIN gonderi AS g ON ge.gonderi_id = g.gonderi_id 
+  INNER JOIN etiket AS e ON ge.etiket_id = e.etiket_id
+  WHERE ge.etiket_id = ?`;
+
+  connection.query(query, [16], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+};
+
 const mydata = {
   gonderi_adi: "Merhaba bugün hava çok güzel",
   etiket: ["#yazilim", "#donanim", "#yapayzeka"],
@@ -133,5 +148,6 @@ connection.connect((err) => {
   // İşlemler
   // createManyToManyTable();
   // createData(mydata);
-  createOtherData(mydata2);
+  // createOtherData(mydata2);
+  getAllData();
 });
