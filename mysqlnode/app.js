@@ -12,131 +12,83 @@ const connection = mysql.createConnection({
   timezone: "+03:00",
 });
 
-const createOneToOneTable = () => {
+const createManyToManyTable = () => {
   connection.query(
-    `CREATE TABLE personel_cv
-    (personel_cv_id INT AUTO_INCREMENT PRIMARY KEY,
-    personel_cv_adi VARCHAR(100))
-    `,
+    `CREATE TABLE gonderi (gonderi_id INT AUTO_INCREMENT PRIMARY KEY, gonderi_adi VARCHAR(100))`,
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        connection.query(`CREATE TABLE personel
-      ( personel_id INT AUTO_INCREMENT PRIMARY KEY,
-        personel_cv_id INT NOT NULL,
-        personel_adi VARCHAR(100),
-        personel_soyadi VARCHAR(100),
-        personel_maas INT,
-        FOREIGN KEY (personel_cv_id) REFERENCES personel_cv(personel_cv_id)
-        )`);
-        console.log(result);
+        connection.query(
+          `CREATE TABLE etiket (etiket_id INT AUTO_INCREMENT PRIMARY KEY, etiket_adi VARCHAR(100))`,
+          (err, result) => {
+            if (err) {
+              console.log(err);
+            } else {
+              connection.query(
+                `CREATE TABLE gonderi_etiket 
+            (gonderi_etiket_id INT AUTO_INCREMENT PRIMARY KEY, 
+            gonderi_id INT NOT NULL, 
+            etiket_id INT NOT NULL, 
+            FOREIGN KEY (gonderi_id) REFERENCES gonderi(gonderi_id), 
+            FOREIGN KEY (etiket_id) REFERENCES etiket(etiket_id))`,
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log(result);
+                  }
+                }
+              );
+              console.log(result);
+            }
+            console.log(result);
+          }
+        );
       }
     }
   );
 };
 
-const createOneToOneTableCascade = () => {
-    connection.query(
-      `CREATE TABLE personel_cv
-      (personel_cv_id INT AUTO_INCREMENT PRIMARY KEY,
-      personel_cv_adi VARCHAR(100))
-      `,
-      (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          connection.query(`CREATE TABLE personel
-        ( personel_id INT AUTO_INCREMENT PRIMARY KEY,
-          personel_cv_id INT NOT NULL,
-          personel_adi VARCHAR(100),
-          personel_soyadi VARCHAR(100),
-          personel_maas INT,
-          FOREIGN KEY (personel_cv_id) REFERENCES personel_cv(personel_cv_id) ON DELETE CASCADE
-          )`);
-          console.log(result);
-        }
-      }
-    );
-};
-
-const createPersonel = (cvAdi, ad, soyad, maas) => {
-  const queryCV = `INSERT INTO personel_cv (personel_cv_adi) VALUES (?)`;
-  connection.query(queryCV, [cvAdi], (err, result) => {
+const createData = (data) => {
+  const query = `INSERT INTO gonderi (gonderi_adi) VALUES (?)`;
+  connection.query(query, [data.gonderi_adi], (err, result) => {
     if (err) {
-      console.log(err);
+      console.log("gonderi hata:", err);
     } else {
-      const cvId = result.insertId;
-      const queryPersonel = `INSERT INTO personel (personel_cv_id, personel_adi, personel_soyadi, personel_maas) VALUES (?, ?, ?, ?)`;
-      connection.query(
-        queryPersonel,
-        [cvId, ad, soyad, maas],
-        (err, result) => {
+      console.log("gonderi:", result);
+      const gonderiId = result.insertId;
+      const etiketIds = [];
+
+      for (let i = 0; i < data.etiket.length; i++) {
+        const queryEtiket = `INSERT INTO etiket (etiket_adi) VALUES (?)`;
+        connection.query(queryEtiket, [data.etiket[i]], (err, result) => {
           if (err) {
-            console.log(err);
+            console.log("etiket hata:", err);
           } else {
-            console.log("Personel result:", result);
+            const querygonderi_etiket = `INSERT INTO gonderi_etiket (gonderi_id, etiket_id) VALUES (?, ?)`;
+            connection.query(
+              querygonderi_etiket,
+              [gonderiId, result.insertId],
+              (err, result) => {
+                if (err) {
+                  console.log("gönderi etiket hata:", err);
+                } else {
+                  console.log("gönderi etiket:", result);
+                }
+              }
+            );
+            console.log("etiket:", result);
           }
-        }
-      );
-      console.log("Cv Result", result);
+        });
+      }
     }
   });
 };
 
-const getAllRelations = () => {
-  // const query = "SELECT * FROM personel_cv, personel WHERE personel_cv.personel_cv_id = personel.personel_cv_id";
-  const query =
-    "SELECT p.personel_id, p.personel_adi, p.personel_soyadi, p.personel_maas, pc.personel_cv_adi FROM personel AS p INNER JOIN personel_cv AS pc ON p.personel_cv_id = pc.personel_cv_id";
-  connection.query(query, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-};
-
-const updateCV = (id, ad) => {
-  const query =
-    "SELECT p.personel_id, p.personel_cv_id FROM personel AS p WHERE p.personel_id = ?";
-  connection.query(query, id, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      const cvId = result[0].personel_cv_id;
-      const query = `UPDATE personel_cv SET personel_cv_adi = ? WHERE personel_cv_id = ?`;
-      connection.query(query, [ad, cvId], (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(result);
-        }
-      });
-    }
-  });
-};
-
-const deleteCV = (id) => {
-  const query =
-    "SELECT p.personel_id, p.personel_cv_id FROM personel AS p WHERE p.personel_id = ?";
-  connection.query(query, [id], (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      const cvId = result[0].personel_cv_id;
-      const query = `DELETE FROM personel_cv WHERE personel_cv_id = ?`;
-      connection.query(query, [cvId], (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(result);
-        }
-      });
-    }
-  });
+const mydata = {
+  gonderi_adi: "Merhaba bugün hava çok güzel",
+  etiket: ["#yazilim", "#donanim", "#yapayzeka"],
 };
 
 connection.connect((err) => {
@@ -147,11 +99,6 @@ connection.connect((err) => {
   console.log("baglanti kuruldu");
 
   // İşlemler
-  // createOneToOneTable();
-  // createOneToOneTableCascade();
-  // createPersonel("Donanım", "Yasin", "Cihan", 2000);
-  // createPersonel("Yazılım", "Mustafa", "Oğuz", 2000);
-  // getAllRelations();
-  // updateCV(1, "Yazılım");
-  deleteCV(2);
+  // createManyToManyTable();
+  createData(mydata);
 });
