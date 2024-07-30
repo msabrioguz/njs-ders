@@ -86,9 +86,41 @@ const createData = (data) => {
   });
 };
 
+const createOtherData = (data) => {
+  const query = `INSERT INTO gonderi (gonderi_adi) VALUES (?)`;
+  connection.query(query, [data.gonderi_adi], (err, result) => {
+    if (err) {
+      console.log("gonderi hata:", err);
+    } else {
+      console.log("gonderi:", result);
+      const gonderiId = result.insertId;
+
+      for (let index = 0; index < data.etiket.length; index++) {
+        const querygonderi_etiket = `INSERT INTO gonderi_etiket (gonderi_id, etiket_id) VALUES (?, ?)`;
+        connection.query(
+          querygonderi_etiket,
+          [gonderiId, data.etiket[index]],
+          (err, result) => {
+            if (err) {
+              console.log("gönderi etiket hata:", err);
+            } else {
+              console.log("gönderi etiket:", result);
+            }
+          }
+        );
+      }
+    }
+  });
+};
+
 const mydata = {
   gonderi_adi: "Merhaba bugün hava çok güzel",
   etiket: ["#yazilim", "#donanim", "#yapayzeka"],
+};
+
+const mydata2 = {
+  gonderi_adi: "Kitap okumak çok güzel bir şey.",
+  etiket: [16, 17],
 };
 
 connection.connect((err) => {
@@ -100,5 +132,6 @@ connection.connect((err) => {
 
   // İşlemler
   // createManyToManyTable();
-  createData(mydata);
+  // createData(mydata);
+  createOtherData(mydata2);
 });
