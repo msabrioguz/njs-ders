@@ -14,7 +14,7 @@ const sequelize = new Sequelize("sequelize_db", "root", "654333", {
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-const connectToDb = async () => {
+db.connect = async () => {
   try {
     await sequelize.authenticate();
     console.log("Baglantı kuruldu.");
@@ -23,4 +23,4 @@ const connectToDb = async () => {
   }
 };
 
-module.exports = { db, connectToDb };
+module.exports = { db };
