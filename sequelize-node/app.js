@@ -94,10 +94,14 @@ const updateById = async (id, name) => {
 
 const createMultipleData = async () => {
   const result = await TestModel.bulkCreate([
-    { name: "Ayhan", age: 29 },
-    { name: "Can", age: 15 },
-    { name: "Veli", age: 33 },
-    { name: "Selahattin", age: 43 },
+    { name: "Ayhan", lastName: "Dağ", eMail: "adana@gmail.com", age: 29 },
+    { name: "Can", lastName: "Arabacı", eMail: "istanbul@gmail.com",age: 15 },
+    { name: "Veli", lastName: "Tuğlacı", eMail: "mersin@gmail.com",age: 33 },
+    { name: "Selahattin", lastName: "Karakaş", eMail: "ankara@gmail.com",age: 43 },
+    { name: "Mustafa", lastName: "Oğuz", eMail: "antalya@gmail.com",age: 35 }, 
+    { name: "Mehmet", lastName: "Oğuz", eMail: "balikesir@gmail.com",age: 65 }, 
+    { name: "Aliye", lastName: "Sert", eMail: "eskisehir@gmail.com",age: 22 }, 
+    { name: "Selami", lastName: "Türk", eMail: "yalova@gmail.com",age: 12 }, 
   ]);
   console.log(result);
 };
@@ -131,10 +135,15 @@ const findCountAll = async () => {
   });
 };
 
+const findByIdFullName = async (id) => {
+  const result = await TestModel.findByPk(id);
+  console.log(result.fullName);
+};
+
 // db.createTables();
 // createData();
 // findAllData();
-// findById(5);
+findById(5);
 // findByFilter("Ayhan");
 // filterData(29);
 // findDataByFilter();
@@ -142,4 +151,5 @@ const findCountAll = async () => {
 // updateById(5, "Ayhan");
 // createMultipleData();
 // findOrCreate();
-findCountAll();
+// findCountAll();
+// findByIdFullName(5);
