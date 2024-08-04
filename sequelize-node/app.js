@@ -19,8 +19,8 @@ const createData = async () => {
   // });
   try {
     const result = await TestModel.create({
-      name: "Vedat",
-      age: 33,
+      name: "Can",
+      age: 15,
     });
     // const result = await test.save();
     console.log(result.dataValues);
@@ -70,18 +70,76 @@ const filterData = async (age) => {
 const deleteById = async (id) => {
   try {
     const result = await TestModel.destroy({ where: { id: id } });
-    if(result){
-        console.log("Veri silindi.")
+    if (result) {
+      console.log("Veri silindi.");
     }
   } catch (error) {
     console.log(error);
   }
 };
 
+const updateById = async (id, name) => {
+  try {
+    const result = await TestModel.update(
+      { name: name },
+      { where: { id: id } }
+    );
+    if (result) {
+      console.log("Veri güncellendi.", result);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const createMultipleData = async () => {
+  const result = await TestModel.bulkCreate([
+    { name: "Ayhan", age: 29 },
+    { name: "Can", age: 15 },
+    { name: "Veli", age: 33 },
+    { name: "Selahattin", age: 43 },
+  ]);
+  console.log(result);
+};
+
+const findOrCreate = async () => {
+  const [data, isCreated] = await TestModel.findOrCreate({
+    where: {
+      name: "Yakup",
+    },
+    defaults: {
+      name: "Yakup",
+      age: 45,
+    },
+  });
+
+  if (isCreated) {
+    console.log("Veri eklendi.", data);
+  } else {
+    console.log("Data:", data);
+  }
+};
+
+const findCountAll = async () => {
+  const result = await TestModel.findAndCountAll({
+    limit: 5,
+    offset: 8,
+  });
+
+  result.rows.forEach((item)=>{
+    console.log('item', JSON.stringify(item.dataValues));
+  });
+};
+
+// db.createTables();
 // createData();
 // findAllData();
 // findById(5);
 // findByFilter("Ayhan");
 // filterData(29);
 // findDataByFilter();
-deleteById(10);
+// deleteById(10);
+// updateById(5, "Ayhan");
+// createMultipleData();
+// findOrCreate();
+findCountAll();
