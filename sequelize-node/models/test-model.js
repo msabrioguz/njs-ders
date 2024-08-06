@@ -49,7 +49,16 @@ const TestModel = db.sequelize.define(
   },
   {
     version: true,
+    hooks: {
+      beforeValidate: (model) => {
+        console.log("BeforeValidate", model);
+      },
+    },
   }
 );
+
+TestModel.addHook("afterCreate", (model) => {
+  console.log("afterCreate:", model);
+});
 
 module.exports = TestModel;

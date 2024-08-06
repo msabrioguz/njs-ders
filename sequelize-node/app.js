@@ -1,4 +1,4 @@
-const { where, Op } = require("sequelize");
+const { where, Op, QueryTypes } = require("sequelize");
 const db = require("./db");
 // const createTable = require('./db/createTables');
 const TestModel = require("./models/test-model");
@@ -6,7 +6,6 @@ const TestModel = require("./models/test-model");
 const connectToDb = async () => {
   await db.connect();
   // await db.createTables();
-  console.log("Veritabanına bağlanılıyor...");
 };
 
 // Uygulama Başlatılıyor.
@@ -20,7 +19,10 @@ const createData = async () => {
   try {
     const result = await TestModel.create({
       name: "Can",
+      lastName: "Demir",
       age: 15,
+      eMail: "candemir@gmail.com"
+
     });
     // const result = await test.save();
     console.log(result.dataValues);
@@ -140,16 +142,28 @@ const findByIdFullName = async (id) => {
   console.log(result.fullName);
 };
 
+const getQueryWithSequelize = async () => {
+  const result = await db.sequelize.query('SELECT * FROM tests WHERE id = :testid', {
+    replacements:{
+      testid: 2
+    },
+    type: QueryTypes.SELECT
+  });
+
+  console.log('result:', result);
+}
+
 // db.createTables();
 // createData();
 // findAllData();
-findById(5);
+// findById(5);
 // findByFilter("Ayhan");
 // filterData(29);
 // findDataByFilter();
 // deleteById(10);
-// updateById(5, "Ayhan");
+// updateById(2, "Ayhan");
 // createMultipleData();
 // findOrCreate();
 // findCountAll();
 // findByIdFullName(5);
+getQueryWithSequelize();
