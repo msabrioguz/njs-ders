@@ -24,12 +24,108 @@ router.post("/createDataM", async (req, res) => {
     });
 
     console.log(result);
-    res.status(201).json({ msg: "Veri başarıyla eklendi." });
+    res.status(200).json({ msg: "Veri başarıyla eklendi." });
   } catch (error) {
-    res.status(400).json({ msg: "Hata: Veri eklenemedi.", error: error });
+    res.status(500).json({ msg: "Hata: Veri eklenemedi.", hata: error });
     console.log(error);
   }
 });
+
+router.post("/createMultiple", async (req, res) => {
+  const data = req.body;
+
+  try {
+    const result = await TestModel.bulkCreate(data);
+    res.json({ msg: "Veriler başarıyla eklendi.", result });
+  } catch (error) {
+    console.log(error);
+    res.json({ msg: "bir hata oluştu.", hata: error });
+  }
+});
+
+router.get("/getAllData", async (req, res) => {
+  try {
+    const result = await TestModel.findAll();
+    // console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.json({ msg: "Bir hata oluştu.", hata: error });
+  }
+});
+
+router.delete("/deleteData/:dataId", async (req, res) => {
+  const { dataId } = req.params;
+
+  try {
+    const findedData = await TestModel.findByPk(dataId);
+    if (findedData) {
+      const result = await findedData.destroy();
+      console.log("Veri silindi.");
+      res
+        .status(200)
+        .json({ msg: "Veri başarıyla silinmiştir.", silinenVeri: result });
+    } else {
+      res
+        .status(500)
+        .json({ msg: "Hata oluştu.", error: "Aradığınız veri bulunamadı." });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Hata oluştu.", hata: error });
+  }
+
+  // try {
+  //   const result = await TestModel.destroy({ where: { id: dataId } });
+  //   if (result) {
+  //     console.log("Veri silindi.");
+  //     res.json({msg: "Veri başarıyla silinmiştir."})
+  //   }
+  // } catch (error) {
+  //   console.log(error);
+  //   res.json({msg: "Hata oluştu.", error: error})
+  // }
+});
+
+router.post("/findOrCreate", async (req, res) => {
+  const { testModel } = req.body;
+  try {
+    const [data, isCreated] = await TestModel.findOrCreate({
+      where: {
+        name: testModel.name,
+      },
+      defaults: testModel,
+    });
+
+    console.log("data:", data);
+    if (isCreated) {
+      res.status(200).json({ isExist: false, ...data });
+      console.log("isCreated:", isCreated);
+    } else {
+      res.status(200).json({ isExist: true, ...data });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Hata gerçekleşti.", hata: error });
+  }
+});
+
+router.put("/updateData/:dataId", async (req, res) => {
+  const { dataId } = req.params;
+  const { name, lastName, eMail, age } = req.body;
+  try {
+    const isUpdated = await TestModel.update(
+      { name: name, lastName: lastName, eMail: eMail, age: age },
+      { where: { id: dataId } }
+    );
+    res.status(200).json(isUpdated);
+  } catch (error) {
+    console.log("err", error);
+    res.status(500).json({ message: "Hata gerçekleşti." });
+  }
+});
+
+router.get("/getTestDataById/:dataId", async (req, res) => {});
 
 app.use(express.json());
 app.use(router);
