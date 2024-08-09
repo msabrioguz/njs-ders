@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const db = { force: true };
+const db = { force: false };
 
 const sequelize = new Sequelize("sequelize_db", "root", "654333", {
   host: "localhost",
