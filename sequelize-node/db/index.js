@@ -29,10 +29,15 @@ db.connect = () => {
 
 db.createTables = async () => {
   const TestModel = require("../models/test-model");
-  const User = require("../models/user");
+  const User = require("../models/User");
+  const SocialMedia = require("../models/SocialMedia");
 
-  await TestModel.sync({ force: db.force });
-  await User.sync({ force: db.force });
+  // İlişkisel Veritabanı
+  User.hasMany(SocialMedia);
+  SocialMedia.belongsTo(User);
+
+  // Tabloların Sekronize Edilmesi
+  sequelize.sync({ force: db.force });
 
   if (db.force) {
     console.log("Veritabanı tabloları oluşturuldu.");
