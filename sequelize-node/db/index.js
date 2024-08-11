@@ -37,7 +37,12 @@ db.createTables = async () => {
   SocialMedia.belongsTo(User);
 
   // Tabloların Sekronize Edilmesi
-  sequelize.sync({ force: db.force });
+  sequelize
+    .sync({ force: db.force })
+    .then(() => {
+      console.log("Sekronize oldu.");
+    })
+    .catch((error) => console.log(error));
 
   if (db.force) {
     console.log("Veritabanı tabloları oluşturuldu.");

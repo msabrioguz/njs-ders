@@ -1,6 +1,6 @@
 const { Op, QueryTypes } = require("sequelize");
 const db = require("./db");
-const SocialMedia = require("./models/SocialMedia");
+// const SocialMedia = require("./models/SocialMedia");
 const User = require("./models/User");
 
 const connectToDb = async () => {
@@ -13,14 +13,17 @@ connectToDb();
 
 const createDataWithRelational = async () => {
   const user = await User.create({
-    username: "Lanet",
+    username: "Msoguz",
   });
-  const socialMedia = await SocialMedia.create({
-    name: "Twitter",
-  });
-  const userWithSocialMedia = await user.addSocialMedia(socialMedia);
+  const socialMediaData = await user.createsocialMedia({ name: "Pinterest" });
 
-  console.log("userWithSocial", userWithSocialMedia);
+  console.log("x", socialMediaData);
+  // const socialMedia = await SocialMedia.create({
+  //   name: "Twitter",
+  // });
+  // const userWithSocialMedia = await user.addSocialMedia(socialMedia);
+
+  // console.log("userWithSocial", userWithSocialMedia);
 };
 
 // İşlemler
