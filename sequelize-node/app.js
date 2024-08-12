@@ -16,10 +16,10 @@ const createDataWithRelational = async () => {
     username: "Msoguz",
   });
 
-  const socialMedia = await SocialMedia.create({
+  const socialMedia = await Social.create({
     name: "Twitter",
   });
-  const userWithSocialMedia = await user.addSocialMedia(socialMedia);
+  const userWithSocialMedia = await user.addSocial(socialMedia);
 
   console.log("userWithSocial", userWithSocialMedia);
 };
@@ -44,16 +44,44 @@ const createData1 = async () => {
   console.log("user:", a);
 };
 
-const pluralize = async() => {
-  const plura = require('pluralize');
+const pluralize = async () => {
+  const plura = require("pluralize");
 
-  const data = plura('SocialMedia');
+  const data = plura("SocialMedia");
   console.log(data);
+};
+
+const getUserSocials = async () => {
+  const user = await User.findByPk(3);
+  const data = await user.getSocials();
+
+  console.log("data", data);
+};
+
+const getUserSocialsCount = async () => {
+  const user = await User.findByPk(3);
+  const data = await user.countSocials();
+
+  console.log("Sosyal medya sayısı:", data);
+};
+
+const multipleSocialMedias = async () => {
+  const user = await User.findByPk(6);
+  const social = await Social.create({ name: 'Facebook'});
+  const social2 = await Social.create({ name: 'Youtube'});
+
+  const result = await user.addSocials([social, social2]);
+
+  console.log("Result: ", result);
 }
+
 // İşlemler
 if (!db.force) {
   // createDataWithRelational();
   // createData();
   // createData1();
   // pluralize();
+  // getUserSocials();
+  // getUserSocialsCount();
+  multipleSocialMedias();
 }
