@@ -1,7 +1,7 @@
 const { Op, QueryTypes } = require("sequelize");
 const db = require("./db");
-// const SocialMedia = require("./models/SocialMedia");
-const User = require("./models/User");
+const Social = require("./models/social-model");
+const User = require("./models/user-model");
 
 const connectToDb = async () => {
   await db.connect();
@@ -15,18 +15,45 @@ const createDataWithRelational = async () => {
   const user = await User.create({
     username: "Msoguz",
   });
-  const socialMediaData = await user.createsocialMedia({ name: "Pinterest" });
 
-  console.log("x", socialMediaData);
-  // const socialMedia = await SocialMedia.create({
-  //   name: "Twitter",
-  // });
-  // const userWithSocialMedia = await user.addSocialMedia(socialMedia);
+  const socialMedia = await SocialMedia.create({
+    name: "Twitter",
+  });
+  const userWithSocialMedia = await user.addSocialMedia(socialMedia);
 
-  // console.log("userWithSocial", userWithSocialMedia);
+  console.log("userWithSocial", userWithSocialMedia);
 };
 
+const createData = async () => {
+  const user = await User.create({
+    username: "Polat",
+  });
+  const a = await user.createSocial({
+    name: "Twitter",
+  });
+
+  console.log("user:", a);
+};
+
+const createData1 = async () => {
+  const user = await User.findByPk(3);
+  const a = await user.createSocial({
+    name: "Linkedin",
+  });
+
+  console.log("user:", a);
+};
+
+const pluralize = async() => {
+  const plura = require('pluralize');
+
+  const data = plura('SocialMedia');
+  console.log(data);
+}
 // İşlemler
 if (!db.force) {
-  createDataWithRelational();
+  // createDataWithRelational();
+  // createData();
+  // createData1();
+  // pluralize();
 }

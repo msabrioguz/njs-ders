@@ -28,13 +28,12 @@ db.connect = () => {
 };
 
 db.createTables = async () => {
-  const TestModel = require("../models/test-model");
-  const User = require("../models/User");
-  const SocialMedia = require("../models/SocialMedia");
+  const User = require("../models/user-model");
+  const Social = require("../models/social-model");
 
   // İlişkisel Veritabanı
-  User.hasMany(SocialMedia);
-  SocialMedia.belongsTo(User);
+  User.hasMany(Social);
+  Social.belongsTo(User);
 
   // Tabloların Sekronize Edilmesi
   sequelize

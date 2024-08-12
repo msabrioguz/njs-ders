@@ -1,7 +1,7 @@
 const db = require("../db");
 const { DataTypes } = require("sequelize");
 
-const SocialMedia = db.sequelize.define("SocialMedia", {
+const SocialMedia = db.sequelize.define("Social", {
   id: {
     type: DataTypes.BIGINT,
     allowNull: false,
@@ -13,6 +13,6 @@ const SocialMedia = db.sequelize.define("SocialMedia", {
     type: DataTypes.STRING({ length: 50 }),
     allowNull: false,
   },
-});
+}, { tableName: "SocialMedia"});
 
 module.exports = SocialMedia;
