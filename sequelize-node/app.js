@@ -1,4 +1,6 @@
-const { Op, QueryTypes } = require("sequelize");
+const express = require("express");
+const app = express();
+const router = express.Router();
 const db = require("./db");
 const SocialModel = require("./models/social-model");
 const User = require("./models/user-model");
@@ -8,9 +10,6 @@ const connectToDb = async () => {
   await db.connect();
   await db.createTables();
 };
-
-// Uygulama Başlatılıyor.
-connectToDb();
 
 const createDataWithRelational = async () => {
   const user = await User.create({
@@ -95,23 +94,22 @@ const deleteSingleData = async () => {
   console.log("Result: ", result);
 };
 
-const listData = async () => {
-  const data = await User.findAll({
-    include: Socials,
-  });
-  console.log(data);
-};
+router.get('/getDataList', async (req, res) => {
+  try {
+    const data = await User.findAll({
+      include: SocialMedia,
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+})
 
-// İşlemler
-if (!db.force) {
-  // createDataWithRelational();
-  // createData();
-  // createData1();
-  // pluralize();
-  // getUserSocials();
-  // getUserSocialsCount();
-  // multipleSocialMedias();
-  // deleteSingleData();
-  // deleteData();
-  listData();
-}
+app.use(router);
+
+app.listen(5000, async () => {
+  console.log("Server started on port 5000\nServer: http://localhost:5000");
+  await connectToDb();
+});
+
