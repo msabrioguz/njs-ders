@@ -1,16 +1,20 @@
 const express = require("express");
 const app = express();
 const router = express.Router();
+const { Op } = require("sequelize");
 const db = require("./db");
 const SocialModel = require("./models/social-model");
 const User = require("./models/user-model");
 const SocialMedia = require("./models/social-model");
+const Actor = require("./models/actor-model");
+const Movie = require("./models/movie-model");
 
 const connectToDb = async () => {
   await db.connect();
   await db.createTables();
 };
 
+app.use(express.json());
 const createDataWithRelational = async () => {
   const user = await User.create({
     username: "Msoguz",
@@ -94,22 +98,119 @@ const deleteSingleData = async () => {
   console.log("Result: ", result);
 };
 
-router.get('/getDataList', async (req, res) => {
+router.post("/createData", async (req, res) => {
   try {
-    const data = await User.findAll({
-      include: SocialMedia,
+    const { UserName, SocialName } = req.body;
+    const data = await User.create({
+      username: UserName,
+    });
+    data.createSocial({
+      name: SocialName,
     });
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
   }
-})
+});
+
+router.post("/createData/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { SocialName } = req.body;
+    const data = await User.findByPk(id);
+    data.createSocial({
+      name: SocialName,
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/getDataList", async (req, res) => {
+  try {
+    const data = await User.findAll({
+      include: [
+        {
+          model: SocialMedia,
+          attributes: ["name", "id"],
+          where: {
+            name: {
+              [Op.in]: ["Twitter"],
+            },
+          },
+        },
+      ],
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/getDataList/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await User.findByPk(id, {
+      attributes: ["id", "username"],
+      include: {
+        model: SocialMedia,
+        attributes: ["name", "id"],
+      },
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const test = async () => {
+  const actor = await Actor.create({ name: "Tom Cruise" });
+  const movie = await Movie.create({ name: "Top Gun" });
+
+  const result = await actor.addMovie(movie);
+
+  console.log("Result: ", result);
+};
+
+const test2 = async () => {
+  const actor = await Actor.create({ name: "Johnny Depp" });
+  const movie = await Movie.create({ name: "Deadpool" });
+
+  const result = await movie.addActor(actor);
+
+  console.log("Result: ", result);
+};
+
+const test3 = async () => {
+  const actor = await Actor.findByPk(1);
+  const movie = await Movie.create({ name: "Last Samurai" });
+
+  const result = await movie.addActor(actor);
+
+  console.log("Result: ", result);
+};
+
+const test4 = async () => {
+  const actor = await Actor.findByPk(1);
+  const movie1 = await Movie.create({ name: "Last Samurai" });
+  const movie2 = await Movie.create({ name: "Tomorrow Never Dies" });
+
+  const result = await actor.addMovies([movie1, movie2]);
+
+  console.log("Result: ", result);
+};
 
 app.use(router);
 
 app.listen(5000, async () => {
   console.log("Server started on port 5000\nServer: http://localhost:5000");
   await connectToDb();
+  // test();
+  // test2();
+  test4();
 });
-

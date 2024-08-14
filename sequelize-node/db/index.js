@@ -30,10 +30,16 @@ db.connect = () => {
 db.createTables = async () => {
   const User = require("../models/user-model");
   const Social = require("../models/social-model");
+  const Actor_Movie = require("../models/actor-movie-model");
+  const Actor = require("../models/actor-model");
+  const Movie = require("../models/movie-model");
 
   // İlişkisel Veritabanı
   User.hasMany(Social);
   Social.belongsTo(User);
+  Actor.belongsToMany(Movie, { through: Actor_Movie });
+  Movie.belongsToMany(Actor, { through: Actor_Movie });
+
 
   // Tabloların Sekronize Edilmesi
   sequelize
