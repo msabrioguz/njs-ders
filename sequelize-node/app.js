@@ -205,6 +205,8 @@ const test4 = async () => {
   console.log("Result: ", result);
 };
 
+
+
 app.use(router);
 
 app.listen(5000, async () => {
@@ -212,5 +214,5 @@ app.listen(5000, async () => {
   await connectToDb();
   // test();
   // test2();
-  test4();
+  // test4();
 });
