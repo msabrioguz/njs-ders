@@ -8,6 +8,7 @@ const User = require("./models/user-model");
 const SocialMedia = require("./models/social-model");
 const Actor = require("./models/actor-model");
 const Movie = require("./models/movie-model");
+const Actor_Movie = require("./models/actor-movie-model");
 
 const connectToDb = async () => {
   await db.connect();
@@ -205,7 +206,136 @@ const test4 = async () => {
   console.log("Result: ", result);
 };
 
+router.post("/CreateManyToManyRelations", async (req, res) => {
+  try {
+    const { ActorName, MovieName } = req.body;
+    const actor = await Actor.create({ name: ActorName });
+    const movie = await Movie.create({ name: MovieName });
+    const result = await actor.addMovie(movie);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
+router.post("/CreateManyToManyRelations/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { MovieName } = req.body;
+    const actor = await Actor.findByPk(id);
+    const movie = await Movie.create({ name: MovieName });
+    const result = await actor.addMovie(movie);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/GetManyToManyRelations", async (req, res) => {
+  try {
+    const data = await Actor.findAll({
+      include: [
+        {
+          model: Movie,
+          attributes: ["name", "id"],
+        },
+      ],
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/GetActorManyToManyRelations/:DataId", async (req, res) => {
+  try {
+    const { DataId } = req.params;
+    const actor = await Actor.findByPk(DataId);
+    result = await actor.getMovies({
+      attributes: ["name", "id"],
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/GetMovieManyToManyRelations/:DataId", async (req, res) => {
+  try {
+    const { DataId } = req.params;
+    const movie = await Movie.findByPk(DataId);
+    result = await movie.getActors({
+      attributes: ["name", "id"],
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/manyToManyCreateActorwithMovie/:ActorId", async (req, res) => {
+  try {
+    const { ActorId } = req.params;
+    const { name } = req.body;
+    const actor = await Actor.findByPk(ActorId);
+    const result = await actor.createMovie({ name });
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/getMovieCount/:ActorId", async (req, res) => {
+  try {
+    const { ActorId } = req.params;
+    const actor = await Actor.findByPk(ActorId);
+    const result = await actor.countMovies();
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.delete("/manyToManyDelete/:ActorId/:MovieId", async (req, res) => {
+  try {
+    const { ActorId, MovieId } = req.params;
+    const actor = await Actor.findByPk(ActorId);
+    const movie = await Movie.findByPk(MovieId);
+    const result = await actor.removeMovie(movie);
+    res.status(200).json({ result: result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/manyToManyListDataForActor", async (req, res) => {
+  try {
+    const data = await Actor.findAll({
+      attributes: ["id", "name"],
+      include: [
+        {
+          model: Movie,
+          attributes: ["id", "name"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.use(router);
 
