@@ -9,12 +9,14 @@ const SocialMedia = require("./models/social-model");
 const Actor = require("./models/actor-model");
 const Movie = require("./models/movie-model");
 const Actor_Movie = require("./models/actor-movie-model");
+const cors = require("cors");
 
 const connectToDb = async () => {
   await db.connect();
   await db.createTables();
 };
 
+app.use(cors());
 app.use(express.json());
 const createDataWithRelational = async () => {
   const user = await User.create({
@@ -133,18 +135,20 @@ router.post("/createData/:id", async (req, res) => {
 router.get("/getDataList", async (req, res) => {
   try {
     const data = await User.findAll({
-      include: [
-        {
-          model: SocialMedia,
-          attributes: ["name", "id"],
-          where: {
-            name: {
-              [Op.in]: ["Twitter"],
-            },
-          },
-        },
-      ],
+      attributes: ["id", "username"],
+      // include: [
+      //   {
+      //     model: SocialMedia,
+      //     attributes: ["name", "id"],
+      //     where: {
+      //       name: {
+      //         [Op.in]: ["Facebook", "Twitter"],
+      //       },
+      //     },
+      //   },
+      // ],
     });
+    console.log(data);
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
